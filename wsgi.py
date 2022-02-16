@@ -1,8 +1,7 @@
-from testpoint import create_app
+from runner import app
 
 
 def main() -> None:
-    app = create_app()
     app.run()
 
 
