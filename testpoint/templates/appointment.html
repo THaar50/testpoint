@@ -1,0 +1,232 @@
+{% extends "base.html" %} {% block title %}Termin buchen{% endblock %} {% block content
+%}
+<div class="container" style="padding-bottom: 50px; padding-top: 20px">
+<form method="POST">
+  <h3 align="center">Termin buchen</h3>
+  <div class="form-group" style="align-content: center">
+    <label for="appointment_day">Terminwunsch *</label>
+    <div>
+      <input
+      type="date"
+      class="form-control"
+      id="appointment_day"
+      name="appointment_day"
+      placeholder="Datum wählen"
+      required
+      />
+    </div>
+
+    <select
+      class="form-select dynamic-field"
+      id="appointment_time"
+      name="appointment_time"
+      required>
+      <option value="">Uhrzeit wählen</option>
+      <option value="8:00:00">8:00-8:15</option>
+      <option value="8:15:00">8:15-8:30</option>
+      <option value="8:30:00">8:30-8:45</option>
+      <option value="8:45:00">8:45-9:00</option>
+      <option value="9:00:00">9:00-9:15</option>
+      <option value="9:15:00">9:15-9:30</option>
+      <option value="9:30:00">9:30-9:45</option>
+      <option value="9:45:00">9:45-10:00</option>
+      <option value="10:00:00">10:00-10:15</option>
+      <option value="10:15:00">10:15-10:30</option>
+      <option value="10:30:00">10:30-10:45</option>
+      <option value="10:45:00">10:45-11:00</option>
+      <option value="11:00:00">11:00-11:15</option>
+      <option value="11:15:00">11:15-11:30</option>
+      <option value="11:30:00">11:30-11:45</option>
+      <option value="11:45:00">11:45-12:00</option>
+      <option value="12:00:00">12:00-12:15</option>
+      <option value="12:15:00">12:15-12:30</option>
+      <option value="12:30:00">12:30-12:45</option>
+      <option value="12:45:00">12:45-13:00</option>
+      <option value="13:00:00">13:00-13:15</option>
+      <option value="13:15:00">13:15-13:30</option>
+      <option value="13:30:00">13:30-13:45</option>
+      <option value="13:45:00">13:45-14:00</option>
+      <option value="14:00:00">14:00-14:15</option>
+      <option value="14:15:00">14:15-14:30</option>
+      <option value="14:30:00">14:30-14:45</option>
+      <option value="14:45:00">14:45-15:00</option>
+      <option value="15:00:00">15:00-15:15</option>
+      <option value="15:15:00">15:15-15:30</option>
+      <option value="15:30:00">15:30-15:45</option>
+      <option value="15:45:00">15:45-16:00</option>
+      <option value="16:00:00">16:00-16:15</option>
+      <option value="16:15:00">16:15-16:30</option>
+      <option value="16:30:00">16:30-16:45</option>
+      <option value="16:45:00">16:45-17:00</option>
+      <option value="17:00:00">17:00-17:15</option>
+      <option value="17:15:00">17:15-17:30</option>
+      <option value="17:30:00">17:30-17:45</option>
+      <option value="17:45:00">17:45-18:00</option>
+      <option value="18:00:00">18:00-18:15</option>
+      <option value="18:15:00">18:15-18:30</option>
+      <option value="18:30:00">18:30-18:45</option>
+      <option value="18:45:00">18:45-19:00</option>
+      <option value="19:00:00">19:00-19:15</option>
+      <option value="19:15:00">19:15-19:30</option>
+      <option value="19:30:00">19:30-19:45</option>
+      <option value="19:45:00">19:45-20:00</option>
+      <option value="20:00:00">20:00-20:15</option>
+      <option value="20:15:00">20:15-20:30</option>
+      <option value="20:30:00">20:30-20:45</option>
+      <option value="20:45:00">20:45-21:00</option>
+      <option value="21:00:00">21:00-21:15</option>
+      <option value="21:15:00">21:15-21:30</option>
+      <option value="21:30:00">21:30-21:45</option>
+      <option value="21:45:00">21:45-22:00</option>
+
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="firstname">Vorname *</label>
+    <input
+      type="text"
+      class="form-control"
+      id="firstname"
+      name="firstname"
+      placeholder="Vornamen eingeben"
+      required
+    />
+  </div>
+  <div class="form-group">
+    <label for="lastname">Nachname *</label>
+    <input
+      type="text"
+      class="form-control"
+      id="lastname"
+      name="lastname"
+      placeholder="Nachnamen eingeben"
+      required
+    />
+  </div>
+  <div class="form-group">
+    <label for="email1">E-Mail *</label>
+    <input
+      type="email"
+      class="form-control"
+      id="email1"
+      name="email1"
+      placeholder="E-Mail eingeben"
+      required
+    />
+  </div>
+  <div class="form-group">
+    <label for="email2">E-Mail wiederholen *</label>
+    <input
+      type="email"
+      class="form-control"
+      id="email2"
+      name="email2"
+      placeholder="E-Mail wiederholen"
+      required
+    />
+  </div>
+  <div class="form-group">
+    <label for="tel">Telefonnummer *</label>
+    <input
+      type="tel"
+      class="form-control"
+      id="tel"
+      name="tel"
+      placeholder="Telefonnummer eingeben"
+      required
+    />
+  </div>
+  <div class="form-group">
+    <label for="birthdate">Geburtsdatum *</label>
+    <input
+      type="date"
+      class="form-control"
+      id="birthdate"
+      name="birthdate"
+      placeholder="Geburtsdatum eingeben"
+      required
+    />
+  </div>
+  <div class="form-group">
+    <label for="gender">Geschlecht *</label>
+    <select
+      class="form-select dynamic-field"
+      id="gender"
+      name="gender"
+      required>
+      <option value="">Bitte wählen</option>
+      <option value="m">männlich</option>
+      <option value="w">weiblich</option>
+      <option value="d">divers</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="street">Straße *</label>
+    <input
+      type="text"
+      class="form-control"
+      id="street"
+      name="street"
+      placeholder="Straße eingeben"
+      required
+    />
+  </div>
+  <div class="form-group">
+    <label for="number">Hausnummer *</label>
+    <input
+      type="text"
+      class="form-control"
+      id="number"
+      name="number"
+      placeholder="Hausnummer eingeben"
+      required
+    />
+  </div>
+  <div class="form-group">
+    <label for="postcode">PLZ *</label>
+    <input
+      type="text"
+      class="form-control"
+      id="postcode"
+      name="postcode"
+      placeholder="Postleitzahl eingeben"
+      required
+    />
+  </div>
+  <div class="form-group">
+    <label for="city">Stadt *</label>
+    <input
+      type="text"
+      class="form-control"
+      id="city"
+      name="city"
+      placeholder="Stadt eingeben"
+      required
+    />
+  </div>
+  <div class="form-group">
+    <label for="country">Land *</label>
+    <input
+      type="text"
+      class="form-control"
+      id="country"
+      name="country"
+      placeholder="Land eingeben"
+      required
+    />
+  </div>
+  <div class="form-group">
+    <label for="passport">Dokumentennummer (Personalausweis oder Reisepass)</label>
+    <input
+      type="text"
+      class="form-control"
+      id="passport"
+      name="passport"
+      placeholder="Dokumentennummer eingeben"
+    />
+  </div>
+  <br />
+  <button type="submit" class="btn btn-primary">Senden</button>
+</form>
+</div>
+{% endblock %}
