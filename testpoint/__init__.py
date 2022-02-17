@@ -1,5 +1,6 @@
 from configparser import ConfigParser
 from secrets import token_urlsafe
+from .views import views
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
@@ -15,14 +16,16 @@ DB_NAME = config['DATABASE']['DB_NAME']
 
 
 def create_app() -> Flask:
-    """Creates a Flask application setting its secret and linking it with the database"""
+    """
+    Creates a Flask application setting its secret and linking it with the database.
+    :return: Flask application
+    """
+
     app = Flask(__name__)
     app.config['SECRET_KEY'] = token_urlsafe(nbytes=256)
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{DB_USER}:{DB_PW}@{DB_ADDRESS}:{DB_PORT}/{DB_NAME}'
     db.init_app(app=app)
-
-    from .views import views
 
     app.register_blueprint(views,  url_prefix='/')
 
