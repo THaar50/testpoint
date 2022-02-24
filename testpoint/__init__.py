@@ -3,14 +3,7 @@ from secrets import token_urlsafe
 from flask import Flask
 from .storage import db
 from .views import views
-
-config = ConfigParser()
-config.read('config.ini')
-DB_USER = config['DATABASE']['DB_USER']
-DB_PW = config['DATABASE']['DB_PW']
-DB_ADDRESS = config['DATABASE']['DB_ADDRESS']
-DB_PORT = config['DATABASE']['DB_PORT']
-DB_NAME = config['DATABASE']['DB_NAME']
+from .config import DB_USER, DB_PW, DB_ADDRESS, DB_PORT, DB_NAME
 
 
 def create_app() -> Flask:
