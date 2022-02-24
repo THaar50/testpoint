@@ -1,6 +1,5 @@
 import datetime as dt
 import re
-from testpoint.models import Appointment, Person
 
 
 def request_is_valid(request: dict) -> bool:
@@ -113,15 +112,3 @@ def postcode_is_valid(postcode: str) -> bool:
     if re.match("\\d{5}", postcode):
         return True
     return False
-
-
-def calculate_available_time_slots(date: str) -> list[(str, str)]:
-    """
-    Calculates available time slots for appointments based on existing appointments.
-    :param date: Day to check for available appointments.
-    :return: List of available appointments.
-    """
-    all_slots = [dt.time(hour=h, minute=m) for h in range(8, 23) for m in [0, 15, 30, 45]]
-    booked = Appointment.query.filter_by(appointment_day=date).all()
-    booked_slots = [app.appointment_time for app in booked]
-    return [slot for slot in all_slots if slot not in booked_slots]
