@@ -1,10 +1,8 @@
 from configparser import ConfigParser
 from secrets import token_urlsafe
-from .views import views
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
+from .storage import db
+from .views import views
 
 config = ConfigParser()
 config.read('config.ini')
@@ -20,7 +18,6 @@ def create_app() -> Flask:
     Creates a Flask application setting its secret and linking it with the database.
     :return: Flask application
     """
-
     app = Flask(__name__)
     app.config['SECRET_KEY'] = token_urlsafe(nbytes=256)
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
