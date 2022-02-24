@@ -6,3 +6,4 @@ pandas>=1.4.1
 SQLAlchemy>=1.4.31
 PyMySQL>=1.0.2
 cryptography>=36.0.1
+Pillow>=9.0.1
