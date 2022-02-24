@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from .validation import request_is_valid
 import datetime as dt
 from .storagehandler import add_person, add_appointment
+from .notification import send_booking_confirmation
 
 views = Blueprint('views', __name__)
 
@@ -39,6 +40,10 @@ def appointment() -> any:
             flash(f"{e}", category='error')
             return redirect(url_for('views.appointment'))
         if app_added:
+            send_booking_confirmation(email=user_input['email1'],
+                                      first_name=user_input['first_name'],
+                                      appointment_day=user_input['appointment_day'],
+                                      appointment_time=user_input['appointment_time'])
             flash('Appointment booked successfully! Please check your inbox for the booking confirmation.',
                   category='success')
         else:
