@@ -1,6 +1,7 @@
 from .storage import db
 from .models import Person, Appointment
 from typing import Optional
+from secrets import token_urlsafe
 
 
 def email_exists(email: str) -> bool:
@@ -10,7 +11,7 @@ def email_exists(email: str) -> bool:
     :return: True if person with given email exists, false otherwise.
     """
     person = Person.query.filter_by(email=email).first()
-    return person.email == email if person else False
+    return True if person else False
 
 
 def person_exists(person: dict) -> bool:
@@ -66,9 +67,9 @@ def add_person(person: dict) -> bool:
 
 def get_person_id(email: str) -> Optional[str]:
     """
-    Returns the person_id of the person with the given email address.
+    Returns the person ID of the person with the given email address.
     :param email: Email address as string.
-    :return: Person_id as integer.
+    :return: Person_id as string or None.
     """
     person = Person.query.filter_by(email=email).first()
     return person.person_id if person else None
@@ -77,7 +78,7 @@ def get_person_id(email: str) -> Optional[str]:
 def appointment_exists(person_id: str, appointment_day: str, appointment_time: str) -> bool:
     """
     Check if a requested appointment for the given person and timeslot already exists in the database.
-    :param person_id: Id of the person requesting an appointment.
+    :param person_id: ID of the person requesting an appointment.
     :param appointment_day: Date of appointment.
     :param appointment_time: Time of appointment.
     :return: True if appointment already exists, False otherwise.
@@ -99,10 +100,39 @@ def add_appointment(email: str, appointment_day: str, appointment_time: str) -> 
         raise ValueError(f"User {email} not found when trying to add appointment")
     if appointment_exists(person_id=person_id, appointment_day=appointment_day, appointment_time=appointment_time):
         return False
-    new_appointment = Appointment(person_id=person_id,
+
+    appointment_id = token_urlsafe(nbytes=32)
+    new_appointment = Appointment(appointment_id=appointment_id,
+                                  person_id=person_id,
                                   appointment_day=appointment_day,
                                   appointment_time=appointment_time)
     db.session.add(new_appointment)
     db.session.commit()
     db.session.close()
     return True
+
+
+def get_appointment_id(person_id: str, appointment_day: str, appointment_time: str) -> Optional[str]:
+    """
+    Returns the appointment ID of the person with the given person ID.
+    :param person_id: ID of the person that made the appointment as string.
+    :param appointment_day: Date of the appointment as string.
+    :param appointment_time: Time of the appointment as string.
+    :return: Appointment ID as string or None.
+    """
+    appointment = Appointment.query.filter_by(person_id=person_id,
+                                              appointment_day=appointment_day,
+                                              appointment_time=appointment_time).first()
+    return appointment.appointment_id if appointment else None
+
+
+def calculate_available_time_slots(date: str) -> list[(str, str)]:
+    """
+    Calculates available time slots for appointments based on existing appointments.
+    :param date: Day to check for available appointments.
+    :return: List of available appointments.
+    """
+    all_slots = [dt.time(hour=h, minute=m) for h in range(8, 23) for m in [0, 15, 30, 45]]
+    booked = Appointment.query.filter_by(appointment_day=date).all()
+    booked_slots = [app.appointment_time for app in booked]
+    return [slot for slot in all_slots if slot not in booked_slots]
