@@ -1,5 +1,5 @@
 from .storage import db
-from .models import Person, Appointment
+from .models import Person, Appointment, Result
 from typing import Optional
 from secrets import token_urlsafe
 
@@ -75,6 +75,16 @@ def get_person_id(email: str) -> Optional[str]:
     return person.person_id if person else None
 
 
+def get_person(person_id: str) -> Optional[Person]:
+    """
+    Returns the person for the given person ID as a Person object as defined in models.
+    :param person_id: Person ID of the requested user.
+    :return: Person object as defined in database models.
+    """
+    person = Person.query.filter_by(person_id=person_id).first()
+    return person if person else None
+
+
 def appointment_exists(person_id: str, appointment_day: str, appointment_time: str) -> bool:
     """
     Check if a requested appointment for the given person and timeslot already exists in the database.
@@ -83,7 +93,9 @@ def appointment_exists(person_id: str, appointment_day: str, appointment_time: s
     :param appointment_time: Time of appointment.
     :return: True if appointment already exists, False otherwise.
     """
-    appointment = Appointment.query.filter_by(person_id=person_id, appointment_day=appointment_day, appointment_time=appointment_time).first()
+    appointment = Appointment.query.filter_by(person_id=person_id,
+                                              appointment_day=appointment_day,
+                                              appointment_time=appointment_time).first()
     return True if appointment else False
 
 
@@ -97,7 +109,7 @@ def add_appointment(email: str, appointment_day: str, appointment_time: str) -> 
     """
     person_id = get_person_id(email=email)
     if person_id is None:
-        raise ValueError(f"User {email} not found when trying to add appointment")
+        raise TypeError(f"User {email} not found when trying to add appointment")
     if appointment_exists(person_id=person_id, appointment_day=appointment_day, appointment_time=appointment_time):
         return False
 
@@ -126,13 +138,59 @@ def get_appointment_id(person_id: str, appointment_day: str, appointment_time: s
     return appointment.appointment_id if appointment else None
 
 
-def calculate_available_time_slots(date: str) -> list[(str, str)]:
+def get_appointment(appointment_id: str) -> Optional[Appointment]:
     """
-    Calculates available time slots for appointments based on existing appointments.
-    :param date: Day to check for available appointments.
-    :return: List of available appointments.
+    Returns the Appointment object for the given appointment ID.
+    :param appointment_id: Appointment ID as string.
+    :return: Appointment object with appointment_id.
     """
-    all_slots = [dt.time(hour=h, minute=m) for h in range(8, 23) for m in [0, 15, 30, 45]]
-    booked = Appointment.query.filter_by(appointment_day=date).all()
-    booked_slots = [app.appointment_time for app in booked]
-    return [slot for slot in all_slots if slot not in booked_slots]
+    appointment = Appointment.query.filter_by(appointment_id=appointment_id).first()
+    return appointment if appointment else None
+
+
+def result_exists(appointment_id: str) -> bool:
+    """
+    Check if a result for the given appointment already exists in the database.
+    :param appointment_id: ID of the person requesting an appointment.
+    :return: True if result already exists, False otherwise.
+    """
+    result = Result.query.filter_by(appointment_id=appointment_id).first()
+    return True if result else False
+
+
+def add_result(appointment_id: str, person_id: str, result: str, test_day: str, test_time: str) -> bool:
+    """
+    Add result to database if appointment ID exists.
+    :param appointment_id: Appointment ID as string.
+    :param person_id: Person ID as integer.
+    :param result: Test result as string.
+    :param test_day: Date of the test as string.
+    :param test_time: Time of the test as string.
+    :return: True if result was added to database, False if result already exists.
+    """
+    if appointment_id is None:
+        raise TypeError(f"No appointment ID given when trying to add result")
+    if result_exists(appointment_id=appointment_id):
+        return False
+
+    result_id = token_urlsafe(nbytes=32)
+    new_result = Result(result_id=result_id,
+                        appointment_id=appointment_id,
+                        person_id=person_id,
+                        result=result,
+                        test_day=test_day,
+                        test_time=test_time)
+    db.session.add(new_result)
+    db.session.commit()
+    db.session.close()
+    return True
+
+
+def get_result_by_app_id(appointment_id: str) -> Optional[Result]:
+    """
+    Return Result object for given appointment ID.
+    :param appointment_id: Appointment ID as string.
+    :return: Result object or None if no such object exists.
+    """
+    result = Result.query.filter_by(appointment_id=appointment_id).first()
+    return result if result else None
