@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
-from .validation import request_is_valid
+from .validation import request_is_valid, birthdate_is_valid, email_is_valid
 import datetime as dt
-from .storagehandler import add_person, add_appointment
+from .storagehandler import add_person, add_appointment, get_person_id, get_person, get_appointment, get_result_by_app_id
 from .notification import send_booking_confirmation
 
 views = Blueprint('views', __name__)
@@ -36,7 +36,7 @@ def appointment() -> any:
             app_added = add_appointment(email=user_input['email1'],
                                         appointment_day=user_input['appointment_day'],
                                         appointment_time=user_input['appointment_time'])
-        except ValueError as e:
+        except TypeError as e:
             flash(f"{e}", category='error')
             return redirect(url_for('views.appointment'))
         if app_added:
@@ -55,3 +55,50 @@ def appointment() -> any:
                            slots=[dt.time(hour=h, minute=m) for h in range(8, 23) for m in [0, 15, 30, 45]],
                            today=dt.date.today(),
                            max_days=dt.date.today()+dt.timedelta(days=14))
+
+
+@views.route('/results/<app_id>/', methods=['GET', 'POST'])
+def results(app_id: str) -> str:
+    """
+    Route to check a test result.
+    :param app_id: Appointment ID to get the corresponding result of.
+    :return: HTML templates for entering credentials,
+    """
+    if not get_appointment(appointment_id=app_id):
+        return render_template('sorry.html')
+
+    if request.method == 'POST':
+        birthdate = request.form.get('birthdate')
+        email = request.form.get('email_address')
+
+        if not birthdate_is_valid(birthdate) or not email_is_valid(email):
+            flash(f'No match for {birthdate} and {email}. Please check your inputs.', category='error')
+            return render_template('results.html')
+
+        person_id = get_person_id(email=email)
+        if not person_id:
+            flash(f'User {email} not found. Please check your inputs.')
+            return render_template('results.html')
+
+        person = get_person(person_id=person_id)
+        if not person.email == email and not person.birthdate.strftime("%Y-%m-%d") == birthdate:
+            flash(f'Email or birthdate is incorrect. Please try again.')
+            return render_template('results.html')
+
+        if not get_appointment(appointment_id=app_id):
+            flash(f'Appointment not found. Please check your inputs.')
+            return render_template('results.html')
+
+        test_result = get_result_by_app_id(appointment_id=app_id)
+        if not test_result:
+            flash('No result available yet. Please wait.', category='error')
+            return render_template('results.html')
+
+        name = f"{person.first_name} {person.last_name}"
+        post_code = person.post_code
+        return render_template('testresult.html',
+                               result=test_result.result,
+                               name=name,
+                               birthdate=birthdate,
+                               post_code=post_code)
+    return render_template('results.html')
