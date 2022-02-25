@@ -10,3 +10,7 @@ USER =
 PW =
 SERVER =
 PORT =
+
+[WEBSITE]
+URL =
+PORT =

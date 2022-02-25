@@ -12,3 +12,6 @@ EMAIL_USER = config['EMAIL']['USER']
 EMAIL_PW = config['EMAIL']['PW']
 EMAIL_SERVER = config['EMAIL']['SERVER']
 EMAIL_PORT = config['EMAIL']['PORT']
+
+WEBSITE_URL = config['WEBSITE']['URL']
+WEBSITE_PORT = config['WEBSITE']['PORT']
