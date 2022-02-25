@@ -8,6 +8,7 @@ from .config import EMAIL_SERVER, EMAIL_USER, EMAIL_PW, EMAIL_PORT
 import qrcode
 import io
 from .storagehandler import get_person_id, get_appointment_id
+from datetime import datetime
 
 
 def create_message(first_name: str, appointment_day: str, appointment_time: str):
@@ -19,6 +20,7 @@ def create_message(first_name: str, appointment_day: str, appointment_time: str)
     :param appointment_time: Time of the appointment as string.
     :return: Personalized notification message for email notification.
     """
+    appointment_day = datetime.strptime(appointment_day, "%Y-%m-%d").strftime("%d.%m.%Y")
     message = f"""
                 <html>
                     <body>
@@ -44,7 +46,7 @@ def create_qr_code(data: str) -> bytes:
     :return: Bytes of the QRCode png image.
     """
     with io.BytesIO() as output:
-        img = qrcode.make(data)
+        img = qrcode.make(data=data)
         img.save(output, format="png")
         return output.getvalue()
 
@@ -66,7 +68,7 @@ def send_mail(send_to: str, subject: str, message: str, appointment_id: str) -> 
     msg_text = MIMEText(message, _subtype='html')
     msg.attach(msg_text)
 
-    msg_img = MIMEImage(create_qr_code(appointment_id))
+    msg_img = MIMEImage(create_qr_code(appointment_id), name="TestPointBookingConfirmationQRCode")
     msg_img.add_header('Content-ID', '<qrcode>')
     msg.attach(msg_img)
 
