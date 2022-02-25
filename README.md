@@ -17,10 +17,18 @@ python runner.py (on Windows)
 In order to run TestPoint, please make sure to install the dependencies from [requirements.txt](requirements.txt) in a virtual environment like so:
 
 1. Navigate to the main "testpoint" folder.
-2. Create a virtual environment with venv, activate it and install the required packages with pip (again python3 for Linux/Mac and python for Windows):
+2. Create a virtual environment with venv, activate it and install the required packages with pip:
+- On Linux/Mac
 ```
 python3 -m venv .
 source bin/activate
+pip install -r requirements.txt
+deactivate
+```
+- On Windows
+```
+python -m venv .
+venv\bin\activate
 pip install -r requirements.txt
 deactivate
 ```
