@@ -50,6 +50,10 @@ USER = youremail@testdomain.com     email address to send notification emails fr
 PW = yourpassword                   password for the email account related to the email address
 SERVER = smtp.yourdomain.com        smtp server to send emails from
 PORT = 465                          smtp port of smtp server
+
+[WEBSITE]
+URL = yourdomain.com                the domain name that corresponds to your webserver hosting the TestPoint application
+PORT = 5000                         port that TestPoint uses to get GET and POST requests
 ```
 
 For more information on how to set up a mysql server on Ubuntu see [this](https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-18-04) tutorial.
