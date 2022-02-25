@@ -28,11 +28,13 @@ class Appointment(db.Model):
     appointment_day = db.Column('appointment_day', db.Date, default=None)
     appointment_time = db.Column('appointment_time', db.Time, default=None)
     created_at = db.Column('created_at', db.DateTime, default=func.now())
+    result = db.relationship('Result')
 
 
 class Result(db.Model):
     id = db.Column('id', db.Integer(), primary_key=True)
     result_id = db.Column('result_id', db.String(45), unique=True)
+    appointment_id = db.Column('appointment_id', db.String(45), db.ForeignKey('appointment.appointment_id'), unique=True)
     person_id = db.Column('person_id', db.Integer(), db.ForeignKey('person.person_id'))
     result = db.Column('result', db.String(3), default=None)
     test_day = db.Column('test_day', db.Date, default=None)
