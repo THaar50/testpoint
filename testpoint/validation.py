@@ -8,8 +8,8 @@ def request_is_valid(request: dict) -> bool:
     :param request: Flask Request object contain the data from the form.
     :return: True if the data adheres to the given rules, False otherwise.
     """
-    if not date_is_valid(request['appointment_day']):
-        raise ValueError("Please select a valid appointment date.")
+    if not appointment_is_valid(date=request['appointment_day'], time=request['appointment_time']):
+        raise ValueError("Please select valid appointment details.")
     if not name_is_valid(request['first_name']) or not name_is_valid(request['last_name']):
         raise ValueError("Please provide a valid name.")
     if not email_is_valid(request['email1']):
@@ -50,6 +50,30 @@ def date_is_valid(date: str) -> bool:
     """
     if re.match("\\d{4}-\\d{2}-\\d{2}", date):
         return True
+    return False
+
+
+def time_is_valid(time: str) -> bool:
+    """
+    Check whether given time is of format HH:MM.
+    :param time: Time as a string.
+    :return: True if given adheres to format HH:MM, False otherwise.
+    """
+    if re.match("\\d{2}:\\d{2}", time):
+        return True
+    return False
+
+
+def appointment_is_valid(date: str, time: str) -> bool:
+    """
+    Check whether given appointment date and time are not in the past.
+    :param date: Date given as a string.
+    :param time: Time given as a string.
+    :return: True if appointment is in the future, False otherwise.
+    """
+    if date_is_valid(date=date) and time_is_valid(time=time):
+        appointment = dt.datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M")
+        return appointment > dt.datetime.now()
     return False
 
 
