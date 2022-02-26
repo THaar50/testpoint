@@ -1,0 +1,12 @@
+{% extends "base.html" %} {% block title %}Your test result{% endblock %} {% block content
+%}
+<div class="container" style="padding-bottom: 50px; padding-top: 20px">
+  <form method="POST">
+    <h3 align="center">Here is your test result</h3>
+    <p>Result: {{result}}</p>
+    <p>Name: {{name}}</p>
+    <p>Birthdate: {{birthdate}}</p>
+    <p>Post code: {{post_code}}</p>
+  </form>
+</div>
+{% endblock %}

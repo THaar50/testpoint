@@ -1,0 +1,35 @@
+{% extends "base.html" %} {% block title %}Test results{% endblock %} {% block content
+%}
+<div class="container" style="padding-bottom: 50px; padding-top: 20px">
+  <form method="POST">
+    <h3 align="center">Get your test result</h3>
+    <div class="form-group" style="align-content: center">
+      <label for="birthdate">Please enter your birthdate *</label>
+      <div>
+        <input
+        type="date"
+        class="form-control"
+        id="birthdate"
+        name="birthdate"
+        placeholder="Select date"
+        max="{{today}}"
+        required
+        />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="email_address">E-Mail *</label>
+      <input
+        type="email"
+        class="form-control"
+        id="email_address"
+        name="email_address"
+        placeholder="E-Mail"
+        required
+      />
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Get test result</button>
+  </form>
+</div>
+{% endblock %}
