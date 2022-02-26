@@ -77,16 +77,16 @@ def results(app_id: str) -> str:
 
         person_id = get_person_id(email=email)
         if not person_id:
-            flash(f'User {email} not found. Please check your inputs.')
+            flash(f'User {email} not found. Please check your inputs.', category='error')
             return render_template('results.html')
 
         person = get_person(person_id=person_id)
-        if not person.email == email and not person.birthdate.strftime("%Y-%m-%d") == birthdate:
-            flash(f'Email or birthdate is incorrect. Please try again.')
+        if not person.email == email or not person.birthdate.strftime("%Y-%m-%d") == birthdate:
+            flash('Email or birthdate is incorrect. Please try again.', category='error')
             return render_template('results.html')
 
         if not get_appointment(appointment_id=app_id):
-            flash(f'Appointment not found. Please check your inputs.')
+            flash('Appointment not found. Please check your inputs.', category='error')
             return render_template('results.html')
 
         test_result = get_result_by_app_id(appointment_id=app_id)
