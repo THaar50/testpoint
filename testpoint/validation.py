@@ -59,7 +59,7 @@ def time_is_valid(time: str) -> bool:
     :param time: Time as a string.
     :return: True if given adheres to format HH:MM, False otherwise.
     """
-    if re.match("\\d{2}:\\d{2}", time):
+    if re.match("\\d{1,2}:\\d{2}", time):
         return True
     return False
 
