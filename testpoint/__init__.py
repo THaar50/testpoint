@@ -1,4 +1,3 @@
-from configparser import ConfigParser
 from secrets import token_urlsafe
 from flask import Flask
 from .storage import db
@@ -8,8 +7,8 @@ from .config import DB_USER, DB_PW, DB_ADDRESS, DB_PORT, DB_NAME
 
 def create_app() -> Flask:
     """
-    Creates a Flask application setting its secret and linking it with the database.
-    :return: Flask application
+    Creates a Flask application setting, its secret and linking it with the database.
+    :return: Flask application.
     """
     app = Flask(__name__)
     app.config['SECRET_KEY'] = token_urlsafe(nbytes=256)
