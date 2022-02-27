@@ -4,7 +4,7 @@ TestPoint is an appointment booking flask application that allows users to make 
 
 # Usage
 
-TestPoint is a flask application and should be used with a dedicated WSGI server like uWSGI to host it on a website.
+TestPoint is a flask application and should be used with a dedicated WSGI server like uWSGI to use it in a production environment.
 
 You can run TestPoint locally on your machine like this:
 ```
