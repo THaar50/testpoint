@@ -1,7 +1,11 @@
 {% extends "base.html" %} {% block title %}Sorry{% endblock %} {% block content
 %}
 <div class="container" style="display: grid; place-items: center; height: 100%">
-  <h1>Sorry, we could not find a match for your request!</h1>
-  <a href="/appointment/" class="btn btn-primary btn-lg">Book appointment!</a>
+  <h1>Sorry! Looks like you are in the wrong place!</h1>
+  <div>
+    <a href="/" class="btn btn-primary btn-lg">Back to home</a>
+    <a href="/appointment/" class="btn btn-primary btn-lg">Book appointment</a>
+  </div>
+
 </div>
 {% endblock %}
