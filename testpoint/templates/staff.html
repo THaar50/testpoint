@@ -1,0 +1,305 @@
+{% extends "base.html" %} {% block title %}User Panel{% endblock %} {% block content
+%}
+<div class="container" style="display: grid; grid-template-columns: 1fr 1fr; grid-gap: 1%; padding-bottom: 50px; padding-top: 20px;">
+  <form method="POST">
+    <h3 align="center">User information</h3>
+    <div class="form-group">
+      <label for="firstname">First name *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="first_name"
+        name="first_name"
+        placeholder="First name"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="lastname">Last name *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="last_name"
+        name="last_name"
+        placeholder="Last name"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="email1">E-Mail *</label>
+      <input
+        type="email"
+        class="form-control"
+        id="email1"
+        name="email1"
+        placeholder="E-Mail"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="email2">E-Mail repeat *</label>
+      <input
+        type="email"
+        class="form-control"
+        id="email2"
+        name="email2"
+        placeholder="Repeat E-Mail"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="tel">Telephone number (including country code) *</label>
+      <input
+        type="tel"
+        class="form-control"
+        id="tel"
+        name="tel"
+        placeholder="Telephone number"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="birthdate">Birthdate *</label>
+      <input
+        type="date"
+        class="form-control"
+        id="birthdate"
+        name="birthdate"
+        placeholder="Birthdate"
+        max="{{today}}"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="gender">Gender *</label>
+      <select
+        class="form-select dynamic-field"
+        id="gender"
+        name="gender"
+        required>
+        <option value="">Please select</option>
+        <option value="m">male</option>
+        <option value="w">female</option>
+        <option value="d">divers</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="street">Street *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="street"
+        name="street"
+        placeholder="Street"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="number">House number *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="number"
+        name="number"
+        placeholder="House number"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="postcode">Post code *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="post_code"
+        name="post_code"
+        placeholder="Post code"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="city">City *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="city"
+        name="city"
+        placeholder="City"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="country">Country *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="country"
+        name="country"
+        placeholder="Country"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="passport">Document number (ID or Passport)</label>
+      <input
+        type="text"
+        class="form-control"
+        id="passport"
+        name="passport"
+        placeholder="Document number"
+      />
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Send</button>
+  </form>
+  <form method="POST">
+    <h3 align="center">User information</h3>
+    <div class="form-group">
+      <label for="firstname">First name *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="first_name"
+        name="first_name"
+        placeholder="First name"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="lastname">Last name *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="last_name"
+        name="last_name"
+        placeholder="Last name"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="email1">E-Mail *</label>
+      <input
+        type="email"
+        class="form-control"
+        id="email1"
+        name="email1"
+        placeholder="E-Mail"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="email2">E-Mail repeat *</label>
+      <input
+        type="email"
+        class="form-control"
+        id="email2"
+        name="email2"
+        placeholder="Repeat E-Mail"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="tel">Telephone number (including country code) *</label>
+      <input
+        type="tel"
+        class="form-control"
+        id="tel"
+        name="tel"
+        placeholder="Telephone number"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="birthdate">Birthdate *</label>
+      <input
+        type="date"
+        class="form-control"
+        id="birthdate"
+        name="birthdate"
+        placeholder="Birthdate"
+        max="{{today}}"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="gender">Gender *</label>
+      <select
+        class="form-select dynamic-field"
+        id="gender"
+        name="gender"
+        required>
+        <option value="">Please select</option>
+        <option value="m">male</option>
+        <option value="w">female</option>
+        <option value="d">divers</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="street">Street *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="street"
+        name="street"
+        placeholder="Street"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="number">House number *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="number"
+        name="number"
+        placeholder="House number"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="postcode">Post code *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="post_code"
+        name="post_code"
+        placeholder="Post code"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="city">City *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="city"
+        name="city"
+        placeholder="City"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="country">Country *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="country"
+        name="country"
+        placeholder="Country"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="passport">Document number (ID or Passport)</label>
+      <input
+        type="text"
+        class="form-control"
+        id="passport"
+        name="passport"
+        placeholder="Document number"
+      />
+    </div>
+    <br>
+    <button type="submit" class="btn btn-primary">Send</button>
+  </form>
+</div>
+{% endblock %}
