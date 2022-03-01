@@ -1,7 +1,9 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask_login import current_user
 from .validation import request_is_valid, birthdate_is_valid, email_is_valid
 import datetime as dt
-from .storagehandler import add_person, add_appointment, get_person_id, get_person, get_appointment, get_result_by_app_id
+from .storagehandler import add_person, add_appointment, get_person_id, get_person, get_appointment, \
+    get_result_by_app_id, is_admin
 from .notification import send_booking_confirmation
 
 views = Blueprint('views', __name__)
@@ -10,9 +12,14 @@ views = Blueprint('views', __name__)
 @views.route('/')
 def home() -> str:
     """
-    Defines route to the rendered template for the homepage.
-    :return: String of HTML template for the homepage.
+    Defines route to the rendered template for the homepage. If the user is logged in it either looks like the
+    admin panel or the user center.
+    :return: HTML template for the homepage.
     """
+    if current_user.is_authenticated:
+        if is_admin(current_user.username):
+            return render_template('admin.html')
+        return render_template('staff.html')
     return render_template('home.html')
 
 
