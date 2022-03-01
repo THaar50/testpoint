@@ -1,5 +1,6 @@
+from sqlalchemy.exc import IntegrityError
 from .storage import db
-from .models import Person, Appointment, Result
+from .models import Person, Appointment, Result, User, Staff
 from typing import Optional
 from secrets import token_urlsafe
 
@@ -65,6 +66,27 @@ def add_person(person: dict) -> bool:
     return True
 
 
+def update_person(person_id: str, updates: dict) -> bool:
+    """
+    Updates a person information on the person table in the database if the person exists.
+    :param person_id: Person ID as string.
+    :param updates: User information dict with info to update.
+    :return: True if person was updated, False if person to update does not exist.
+    """
+    person = get_person(person_id=person_id)
+    if person is None:
+        return False
+    try:
+        db.session.query(Person).filter(Person.person_id == person_id).update(updates)
+    except IntegrityError as e:
+        raise IntegrityError(statement=f"Duplicate encountered. {e.statement}",
+                             params=e.params,
+                             orig=e.orig)
+    db.session.commit()
+    db.session.close()
+    return True
+
+
 def get_person_id(email: str) -> Optional[str]:
     """
     Returns the person ID of the person with the given email address.
@@ -113,7 +135,7 @@ def add_appointment(email: str, appointment_day: str, appointment_time: str) -> 
     if appointment_exists(person_id=person_id, appointment_day=appointment_day, appointment_time=appointment_time):
         return False
 
-    appointment_id = token_urlsafe(nbytes=32)
+    appointment_id = token_urlsafe(nbytes=128)
     new_appointment = Appointment(appointment_id=appointment_id,
                                   person_id=person_id,
                                   appointment_day=appointment_day,
@@ -173,7 +195,7 @@ def add_result(appointment_id: str, person_id: str, result: str, test_day: str, 
     if result_exists(appointment_id=appointment_id):
         return False
 
-    result_id = token_urlsafe(nbytes=32)
+    result_id = token_urlsafe(nbytes=128)
     new_result = Result(result_id=result_id,
                         appointment_id=appointment_id,
                         person_id=person_id,
@@ -194,3 +216,43 @@ def get_result_by_app_id(appointment_id: str) -> Optional[Result]:
     """
     result = Result.query.filter_by(appointment_id=appointment_id).first()
     return result if result else None
+
+
+def get_user(username: str) -> Optional[User]:
+    """
+    Returns the User object for the given email address.
+    :param username: Email address of user as string.
+    :return: User object for username.
+    """
+    user = User.query.filter_by(username=username).first()
+    return user if user else None
+
+
+def get_user_pw(username: str) -> str:
+    """
+    Returns the password hash of a given user.
+    :param username: Email address of the user as string.
+    :return: Password hash for user with corresponding username/email address.
+    """
+    user = User.query.filter_by(username=username).first()
+    return user.password
+
+
+def get_staff(username: str) -> Optional[User]:
+    """
+    Returns the User object for the given email address.
+    :param username: Email address of user as string.
+    :return: User object for username.
+    """
+    staff = Staff.query.filter_by(username=username).first()
+    return staff if staff else None
+
+
+def is_admin(username: str) -> bool:
+    """
+    Checks whether user is an admin or not.
+    :param username: Email address of user as string.
+    :return: Role of user object for username.
+    """
+    staff = Staff.query.filter_by(email=username).first()
+    return staff.admin == 'Y' if staff else False
