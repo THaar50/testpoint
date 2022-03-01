@@ -10,7 +10,7 @@ views = Blueprint('views', __name__)
 
 
 @views.route('/')
-def home() -> str:
+def home():
     """
     Defines route to the rendered template for the homepage. If the user is logged in it either looks like the
     admin panel or the user center.
@@ -18,8 +18,8 @@ def home() -> str:
     """
     if current_user.is_authenticated:
         if is_admin(current_user.username):
-            return render_template('admin.html')
-        return render_template('staff.html')
+            return redirect(url_for('routes.admin'))
+        return redirect(url_for('routes.staff'))
     return render_template('home.html')
 
 
