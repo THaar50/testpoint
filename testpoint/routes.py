@@ -53,7 +53,6 @@ def admin():
         return render_template('sorry.html')
 
     appointments = get_verified_appointments()
-    print(appointments)
     if request.method == 'POST':
         appointment_id = request.form.get('appointment_id')
         test_result = request.form.get('test_result')
@@ -80,6 +79,21 @@ def staff():
     Route for user center of staff.
     :return: HTML template for staff user center.
     """
+    appointments = get_verified_appointments()
     if request.method == 'POST':
-        pass
-    return render_template('staff.html')
+        appointment_id = request.form.get('appointment_id')
+        test_result = request.form.get('test_result')
+        appointment = get_appointment_by_key(key=appointment_id)
+        try:
+            add_result(appointment_id=appointment.appointment_id,
+                       person_id=appointment.person_id,
+                       result=test_result,
+                       test_day=appointment.appointment_day,
+                       test_time=appointment.appointment_time)
+        except RuntimeError as e:
+            flash(f"{e}", category='error')
+            return redirect(url_for('routes.staff'))
+        flash('Added result!', category='success')
+        return render_template('staff.html', appointments=get_verified_appointments())
+
+    return render_template('staff.html', appointments=appointments)
