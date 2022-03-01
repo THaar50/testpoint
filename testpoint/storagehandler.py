@@ -1,3 +1,4 @@
+from sqlalchemy import and_
 from sqlalchemy.exc import IntegrityError
 from .storage import db
 from .models import Person, Appointment, Result, User, Staff
@@ -146,6 +147,21 @@ def add_appointment(email: str, appointment_day: str, appointment_time: str) -> 
     return True
 
 
+def verify_appointment(appointment_id: str) -> bool:
+    """
+    Verifies an appointment by updating the verified column on the database table if appointment exists.
+    :param appointment_id: Appointment ID as string.
+    :return: True if appointment was updated, False if appointment does not exist.
+    """
+    appointment = get_appointment(appointment_id=appointment_id)
+    if appointment is None:
+        return False
+    db.session.query(Appointment).filter(Appointment.appointment_id == appointment_id).update({'verified': 'Y'})
+    db.session.commit()
+    db.session.close()
+    return True
+
+
 def get_appointment_id(person_id: str, appointment_day: str, appointment_time: str) -> Optional[str]:
     """
     Returns the appointment ID of the person with the given person ID.
@@ -168,6 +184,25 @@ def get_appointment(appointment_id: str) -> Optional[Appointment]:
     """
     appointment = Appointment.query.filter_by(appointment_id=appointment_id).first()
     return appointment if appointment else None
+
+
+def get_appointment_by_key(key: str) -> Optional[Appointment]:
+    """
+    Returns the Appointment object for the given internal ID (primary key).
+    :param key: Appointment internal ID as string.
+    :return: Appointment object with ID.
+    """
+    appointment = Appointment.query.filter_by(id=key).first()
+    return appointment if appointment else None
+
+
+def get_verified_appointments() -> list[Appointment]:
+    """
+    Returns a list of all verified appointments that have no corresponding result.
+    :return: List of verified appointments without result.
+    """
+    appointments = db.session.query(Appointment).join(Result, isouter=True).filter(and_(Appointment.verified == 'Y', Result.id.is_(None))).all()
+    return appointments
 
 
 def result_exists(appointment_id: str) -> bool:
@@ -193,7 +228,7 @@ def add_result(appointment_id: str, person_id: str, result: str, test_day: str, 
     if appointment_id is None:
         raise TypeError(f"No appointment ID given when trying to add result")
     if result_exists(appointment_id=appointment_id):
-        return False
+        raise RuntimeError(f"Result for person {person_id} was not added because a result already exists.")
 
     result_id = token_urlsafe(nbytes=128)
     new_result = Result(result_id=result_id,
