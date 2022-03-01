@@ -1,0 +1,133 @@
+{% extends "base.html" %} {% block title %}User Account Info{% endblock %} {% block content
+%}
+<div class="container" style="display: grid; padding-bottom: 50px; padding-top: 20px;">
+  <form method="POST">
+    <h3 align="center">User data for {{ person.email }}</h3>
+    <div class="form-group">
+    <label for="first_name">First name</label>
+    <input
+      type="text"
+      class="form-control"
+      id="first_name"
+      name="first_name"
+      placeholder="{{ person.first_name }}"
+    />
+    </div>
+    <div class="form-group">
+      <label for="last_name">Last name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="last_name"
+        name="last_name"
+        placeholder="{{ person.last_name }}"
+      />
+    </div>
+    <div class="form-group">
+      <label for="birthdate">Birthdate</label>
+      <input
+        type="text"
+        class="form-control"
+        id="birthdate"
+        name="birthdate"
+        placeholder="{{ person.birthdate.strftime('%d.%m.%Y') }}"
+        max="{{today}}"
+      />
+    </div>
+    <div class="form-group">
+      <label for="gender">Gender</label>
+      <select
+        class="form-select dynamic-field"
+        id="gender"
+        name="gender">
+        <option value="">{{ person.gender }}</option>
+        <option value="m">m</option>
+        <option value="w">f</option>
+        <option value="d">d</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="street">Street</label>
+      <input
+        type="text"
+        class="form-control"
+        id="street"
+        name="street"
+        placeholder="{{ person.street }}"
+      />
+    </div>
+    <div class="form-group">
+      <label for="number">House number</label>
+      <input
+        type="text"
+        class="form-control"
+        id="number"
+        name="number"
+        placeholder="{{ person.number }}"
+      />
+    </div>
+    <div class="form-group">
+      <label for="post_code">Post code</label>
+      <input
+        type="text"
+        class="form-control"
+        id="post_code"
+        name="post_code"
+        placeholder="{{ person.post_code }}"
+      />
+    </div>
+    <div class="form-group">
+      <label for="city">City</label>
+      <input
+        type="text"
+        class="form-control"
+        id="city"
+        name="city"
+        placeholder="{{ person.city }}"
+      />
+    </div>
+    <div class="form-group">
+      <label for="country">Country</label>
+      <input
+        type="text"
+        class="form-control"
+        id="country"
+        name="country"
+        placeholder="{{ person.country }}"
+      />
+    </div>
+    <div class="form-group">
+      <label for="passport">Document number (ID or Passport)</label>
+      <input
+        type="text"
+        class="form-control"
+        id="passport"
+        name="passport"
+        placeholder="{{ person.passport }}"
+      />
+    </div>
+        <div class="form-group">
+      <label for="email">E-Mail</label>
+      <input
+        type="email"
+        class="form-control"
+        id="email"
+        name="email"
+        placeholder="{{ person.email }}"
+      />
+    </div>
+    <div class="form-group">
+      <label for="tel">Telephone number</label>
+      <input
+        type="tel"
+        class="form-control"
+        id="tel"
+        name="tel"
+        placeholder="{{ person.tel }}"
+      />
+    </div>
+    <br>
+    <button type="submit" class="btn btn-primary">Verify</button>
+  </form>
+</div>
+{% endblock %}

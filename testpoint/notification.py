@@ -4,7 +4,7 @@ from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import formatdate
-from .config import EMAIL_SERVER, EMAIL_USER, EMAIL_PW, EMAIL_PORT
+from .config import EMAIL_SERVER, EMAIL_USER, EMAIL_PW, EMAIL_PORT, WEBSITE_URL
 import qrcode
 import io
 from .storagehandler import get_person_id, get_appointment_id
@@ -68,7 +68,8 @@ def send_mail(send_to: str, subject: str, message: str, appointment_id: str) -> 
     msg_text = MIMEText(message, _subtype='html')
     msg.attach(msg_text)
 
-    msg_img = MIMEImage(create_qr_code(appointment_id), name="TestPointBookingConfirmationQRCode")
+    qr_code_url = f"{WEBSITE_URL}/appinfo/{appointment_id}"
+    msg_img = MIMEImage(create_qr_code(qr_code_url), name="TestPointBookingConfirmationQRCode")
     msg_img.add_header('Content-ID', '<qrcode>')
     msg.attach(msg_img)
 
