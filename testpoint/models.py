@@ -28,6 +28,7 @@ class Appointment(db.Model):
     person_id = db.Column('person_id', db.Integer(), db.ForeignKey('person.person_id'))
     appointment_day = db.Column('appointment_day', db.Date, default=None)
     appointment_time = db.Column('appointment_time', db.Time, default=None)
+    verified = db.Column('verified', db.String(1), default='N')
     created_at = db.Column('created_at', db.DateTime, default=func.now())
     result = db.relationship('Result')
 
