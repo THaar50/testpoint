@@ -20,7 +20,7 @@ def appinfo(app_id: str):
     person = Person.query.filter_by(person_id=appointment.person_id).first()
     if request.method == 'POST':
         user_input = request.form.to_dict()
-        updates = {key: user_input[key] for key in user_input if user_input[key]}
+        updates = {detail: user_input[detail] for detail in user_input if user_input[detail]}
 
         if not updates:
             flash('Details verified!', category='success')
