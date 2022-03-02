@@ -47,13 +47,13 @@
           {% if category == 'error' %}
             <div class="alert alert-danger alter-dismissable fade show" style="text-align: center" role="alert">
               {{ message }}
-              <button type="button" class="btn-close" aria-label="Close" data-dismiss="alert"/>
+              <button type="button" class="btn-close" style="padding-top: 1em" aria-label="Close" data-dismiss="alert"/>
               </button>
             </div>
           {% elif category == 'success' %}
             <div class="alert alert-success alter-dismissable fade show" style="text-align: center" role="alert">
               {{ message }}
-              <button type="button" class="btn-close" aria-label="Close" data-dismiss="alert"/>
+              <button type="button" class="btn-close" style="padding-top: 1em" aria-label="Close" data-dismiss="alert"/>
               </button>
             </div>
           {% endif %}
