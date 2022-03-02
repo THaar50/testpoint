@@ -3,8 +3,9 @@ from flask_login import login_required, current_user
 from sqlalchemy.exc import IntegrityError
 from werkzeug.utils import redirect
 from testpoint.models import Appointment, Person
+from testpoint.notification import send_test_result_notification
 from testpoint.storagehandler import is_admin, update_person, verify_appointment, get_verified_appointments, add_result, \
-    get_appointment_by_key
+    get_appointment_by_key, get_person
 
 routes = Blueprint('routes', __name__)
 
@@ -39,34 +40,39 @@ def appinfo(app_id: str):
 
     if appointment and person:
         return render_template('userinfo.html', appointment=appointment, person=person)
-    return redirect(url_for('auth.login'))
+    return redirect(url_for('routes.staff'))
 
 
 @routes.route("/admin/", methods=['GET', 'POST'])
 @login_required
 def admin():
     """
-    Route for admin panel. Redirects to sorry page if user is not admin.
-    :return: Admin panel template if admin, otherwise sorry page template.
+    Route for admin panel. Redirects to staff page if user is not admin.
+    :return: Admin panel template if admin, otherwise staff page template.
     """
     if not is_admin(current_user.username):
-        return render_template('sorry.html')
+        return redirect(url_for('routes.staff'))
 
     appointments = get_verified_appointments()
     if request.method == 'POST':
         appointment_id = request.form.get('appointment_id')
         test_result = request.form.get('test_result')
         appointment = get_appointment_by_key(key=appointment_id)
+        person_id = appointment.person_id
+        appointment_id = appointment.appointment_id
         try:
-            add_result(appointment_id=appointment.appointment_id,
-                       person_id=appointment.person_id,
-                       result=test_result,
-                       test_day=appointment.appointment_day,
-                       test_time=appointment.appointment_time)
+            add_result(appointment_id=appointment_id,
+                       person_id=person_id,
+                       result=test_result)
         except RuntimeError as e:
             flash(f"{e}", category='error')
-            return redirect(url_for('routes.admin'))
-        flash('Added result!', category='success')
+            return redirect(url_for('routes.staff'))
+
+        person = get_person(person_id=person_id)
+        send_test_result_notification(email=person.email,
+                                      first_name=person.first_name,
+                                      appointment_id=appointment_id)
+        flash('Added result and sent notification!', category='success')
         return render_template('admin.html', appointments=get_verified_appointments())
 
     return render_template('admin.html', appointments=appointments)
@@ -81,19 +87,24 @@ def staff():
     """
     appointments = get_verified_appointments()
     if request.method == 'POST':
-        appointment_id = request.form.get('appointment_id')
+        appointment_key = request.form.get('appointment_key')
         test_result = request.form.get('test_result')
-        appointment = get_appointment_by_key(key=appointment_id)
+        appointment = get_appointment_by_key(key=appointment_key)
+        person_id = appointment.person_id
+        appointment_id = appointment.appointment_id
         try:
-            add_result(appointment_id=appointment.appointment_id,
-                       person_id=appointment.person_id,
-                       result=test_result,
-                       test_day=appointment.appointment_day,
-                       test_time=appointment.appointment_time)
+            add_result(appointment_id=appointment_id,
+                       person_id=person_id,
+                       result=test_result)
         except RuntimeError as e:
             flash(f"{e}", category='error')
             return redirect(url_for('routes.staff'))
-        flash('Added result!', category='success')
+
+        person = get_person(person_id=person_id)
+        send_test_result_notification(email=person.email,
+                                      first_name=person.first_name,
+                                      appointment_id=appointment_id)
+        flash('Added result and sent notification!', category='success')
         return render_template('staff.html', appointments=get_verified_appointments())
 
     return render_template('staff.html', appointments=appointments)

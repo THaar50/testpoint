@@ -4,6 +4,7 @@ from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import formatdate
+from typing import Optional
 from .config import EMAIL_SERVER, EMAIL_USER, EMAIL_PW, EMAIL_PORT, WEBSITE_URL
 import qrcode
 import io
@@ -11,10 +12,10 @@ from .storagehandler import get_person_id, get_appointment_id
 from datetime import datetime
 
 
-def create_message(first_name: str, appointment_day: str, appointment_time: str):
+def create_booking_confirmation_message(first_name: str, appointment_day: str, appointment_time: str) -> str:
     """
-    Creates the HTML message for the email notification using first name and appointment details
-    to personalize the message.
+    Creates the HTML message for the booking notification using first name and appointment details to
+    personalize the message.
     :param first_name: First name of the user booking the appointment.
     :param appointment_day: Date of the appointment as string.
     :param appointment_time: Time of the appointment as string.
@@ -51,14 +52,14 @@ def create_qr_code(data: str) -> bytes:
         return output.getvalue()
 
 
-def send_mail(send_to: str, subject: str, message: str, appointment_id: str) -> None:
+def send_mail(send_to: str, subject: str, message: str, qr_code_url: Optional[str] = None) -> None:
     """
     Send an email with given content.
     :param send_to: Recipient email address as string.
     :param subject: Subject of the email as string.
     :param message: Body of the email as html string.
-    :param appointment_id: Appointment ID as string.
-    :return: None
+    :param qr_code_url: URL to create QRCode for as string, None if no URL is provided None.
+    :return: None.
     """
     msg = MIMEMultipart()
     msg['From'] = EMAIL_USER
@@ -68,10 +69,10 @@ def send_mail(send_to: str, subject: str, message: str, appointment_id: str) -> 
     msg_text = MIMEText(message, _subtype='html')
     msg.attach(msg_text)
 
-    qr_code_url = f"{WEBSITE_URL}/appinfo/{appointment_id}"
-    msg_img = MIMEImage(create_qr_code(qr_code_url), name="TestPointBookingConfirmationQRCode")
-    msg_img.add_header('Content-ID', '<qrcode>')
-    msg.attach(msg_img)
+    if qr_code_url:
+        msg_img = MIMEImage(create_qr_code(qr_code_url), name="TestPointBookingConfirmationQRCode")
+        msg_img.add_header('Content-ID', '<qrcode>')
+        msg.attach(msg_img)
 
     context = ssl.create_default_context()
 
@@ -88,14 +89,51 @@ def send_booking_confirmation(email: str, first_name: str, appointment_day: str,
     :param first_name: First name of the recipient as string.
     :param appointment_day: Date of the appointment as string.
     :param appointment_time: Time of the appointment as string.
-    :return: None
+    :return: None.
     """
     person_id = get_person_id(email=email)
     appointment_id = get_appointment_id(person_id=person_id,
                                         appointment_day=appointment_day,
                                         appointment_time=appointment_time)
-    message = create_message(first_name=first_name,
-                             appointment_day=appointment_day,
-                             appointment_time=appointment_time)
-    subject = "Your booking confirmation for your appointment at TestPoint"
-    send_mail(send_to=email, subject=subject, message=message, appointment_id=appointment_id)
+    message = create_booking_confirmation_message(first_name=first_name,
+                                                  appointment_day=appointment_day,
+                                                  appointment_time=appointment_time)
+    subject = "Your booking confirmation for your appointment at TestPoint!"
+    qr_code_url = f"{WEBSITE_URL}/appinfo/{appointment_id}"
+    send_mail(send_to=email, subject=subject, message=message, qr_code_url=qr_code_url)
+
+
+def create_result_notification_message(first_name: str, appointment_id: str) -> str:
+    """
+    Creates the HTML message for the booking notification using first name and appointment details to
+    personalize the message.
+    :param first_name: First name of the user booking the appointment as string.
+    :param appointment_id: ID of the appointment for the result as string.
+    :return: Personalized notification message for email notification as string.
+    """
+    message = f"""
+                <html>
+                    <body>
+                        <h1>Your test result is here!</h1>
+                        <p>Hello {first_name}!</p>
+                        <p>Thanks again for choosing our test centre!</p>
+                        <p>To check your test result simply click on the following link:</p>
+                        {WEBSITE_URL}/results/{appointment_id} <br> <br>
+                        <p>Stay safe and until next time!</p>
+                    </body>
+                </html>
+                """
+    return message
+
+
+def send_test_result_notification(email: str, first_name: str, appointment_id: str) -> None:
+    """
+    Sends a notification email containing the link to check the test result.
+    :param email: Recipient of the email.
+    :param first_name: First name of the recipient.
+    :param appointment_id: ID of the appointment tied to the result.
+    :return: None.
+    """
+    subject = "Your test result is available!"
+    message = create_result_notification_message(first_name=first_name, appointment_id=appointment_id)
+    send_mail(send_to=email, subject=subject, message=message)

@@ -215,14 +215,12 @@ def result_exists(appointment_id: str) -> bool:
     return True if result else False
 
 
-def add_result(appointment_id: str, person_id: str, result: str, test_day: str, test_time: str) -> bool:
+def add_result(appointment_id: str, person_id: str, result: str) -> bool:
     """
     Add result to database if appointment ID exists.
     :param appointment_id: Appointment ID as string.
     :param person_id: Person ID as integer.
     :param result: Test result as string.
-    :param test_day: Date of the test as string.
-    :param test_time: Time of the test as string.
     :return: True if result was added to database, False if result already exists.
     """
     if appointment_id is None:
@@ -230,13 +228,17 @@ def add_result(appointment_id: str, person_id: str, result: str, test_day: str, 
     if result_exists(appointment_id=appointment_id):
         raise RuntimeError(f"Result for person {person_id} was not added because a result already exists.")
 
+    appointment = get_appointment(appointment_id=appointment_id)
+    if not appointment:
+        raise RuntimeError(f"Result for person {person_id} was not added because no corresponding appointment exists.")
+
     result_id = token_urlsafe(nbytes=128)
     new_result = Result(result_id=result_id,
                         appointment_id=appointment_id,
                         person_id=person_id,
                         result=result,
-                        test_day=test_day,
-                        test_time=test_time)
+                        test_day=appointment.appointment_day,
+                        test_time=appointment.appointment_time)
     db.session.add(new_result)
     db.session.commit()
     db.session.close()
