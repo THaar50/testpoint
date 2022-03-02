@@ -35,7 +35,11 @@ def appointment() -> any:
             request_is_valid(request=user_input)
         except ValueError as e:
             flash(f"{e}", category='error')
-            return redirect(url_for('views.appointment'))
+            return render_template('appointment.html',
+                                   user_input=user_input,
+                                   slots=[dt.time(hour=h, minute=m) for h in range(8, 23) for m in [0, 15, 30, 45]],
+                                   today=dt.date.today(),
+                                   max_days=dt.date.today() + dt.timedelta(days=14))
 
         add_person(person=user_input)
 

@@ -3,184 +3,365 @@
 <div class="container" style="padding-bottom: 50px; padding-top: 20px">
 <form method="POST">
   <h3 align="center">Book an appointment</h3>
-  <div class="form-group" style="align-content: center">
-    <label for="appointment_day">Appointment date *</label>
-    <div>
+  {% if user_input %}
+    <div class="form-group" style="align-content: center">
+      <label for="appointment_day">Appointment date *</label>
+      <div>
+        <input
+        type="date"
+        class="form-control"
+        id="appointment_day"
+        name="appointment_day"
+        value="{{ user_input['appointment_day'] }}"
+        min="{{today}}"
+        max="{{max_days}}"
+        required
+        />
+      </div>
+
+      <select
+        class="form-select dynamic-field"
+        id="appointment_time"
+        name="appointment_time"
+        required>
+        <option value="{{ user_input['appointment_time'] }}">{{ user_input['appointment_time'] }}</option>
+        {% for slot in slots %}
+          {% if slot.minute == 45 %}
+            <option value="{{slot.hour}}:{{slot.minute}}">{{slot.hour}}:{{slot.minute}}-{{slot.hour+1}}:00</option>
+          {% elif slot.minute == 0 %}
+            <option value="{{slot.hour}}:{{slot.minute}}{{slot.minute}}">{{slot.hour}}:00-{{slot.hour}}:{{slot.minute+15}}</option>
+          {% else %}
+            <option value="{{slot.hour}}:{{slot.minute}}">{{slot.hour}}:{{slot.minute}}-{{slot.hour}}:{{slot.minute+15}}</option>
+          {% endif %}
+        {% endfor %}
+
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="first_name">First name *</label>
       <input
-      type="date"
-      class="form-control"
-      id="appointment_day"
-      name="appointment_day"
-      placeholder="Select date"
-      min="{{today}}"
-      max="{{max_days}}"
-      required
+        type="text"
+        class="form-control"
+        id="first_name"
+        name="first_name"
+        value="{{ user_input['first_name'] }}"
+        required
       />
     </div>
+    <div class="form-group">
+      <label for="last_name">Last name *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="last_name"
+        name="last_name"
+        value="{{ user_input['last_name'] }}"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="email1">E-Mail *</label>
+      <input
+        type="email"
+        class="form-control"
+        id="email1"
+        name="email1"
+        value="{{ user_input['email1'] }}"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="email2">E-Mail repeat *</label>
+      <input
+        type="email"
+        class="form-control"
+        id="email2"
+        name="email2"
+        value="{{ user_input['email2'] }}"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="tel">Telephone number (including country code) *</label>
+      <input
+        type="tel"
+        class="form-control"
+        id="tel"
+        name="tel"
+        value="{{ user_input['tel'] }}"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="birthdate">Birthdate *</label>
+      <input
+        type="date"
+        class="form-control"
+        id="birthdate"
+        name="birthdate"
+        value="{{ user_input['birthdate'] }}"
+        max="{{today}}"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="gender">Gender *</label>
+      <select
+        class="form-select dynamic-field"
+        id="gender"
+        name="gender"
+        required>
+        <option value="{{ user_input['gender'] }}">{{ user_input['gender'] }}"</option>
+        <option value="m">male</option>
+        <option value="w">female</option>
+        <option value="d">divers</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="street">Street *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="street"
+        name="street"
+        value="{{ user_input['street'] }}"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="number">House number *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="number"
+        name="number"
+        value="{{ user_input['number'] }}"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="post_code">Post code *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="post_code"
+        name="post_code"
+        value="{{ user_input['post_code'] }}"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="city">City *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="city"
+        name="city"
+        value="{{ user_input['city'] }}"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="country">Country *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="country"
+        name="country"
+        value="{{ user_input['country'] }}"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="passport">Document number (ID or Passport)</label>
+      <input
+        type="text"
+        class="form-control"
+        id="passport"
+        name="passport"
+        value="{{ user_input['passport'] }}"
+      />
+    </div>
+  {% else %}
+    <div class="form-group" style="align-content: center">
+      <label for="appointment_day">Appointment date *</label>
+      <div>
+        <input
+        type="date"
+        class="form-control"
+        id="appointment_day"
+        name="appointment_day"
+        placeholder="Select date"
+        min="{{today}}"
+        max="{{max_days}}"
+        required
+        />
+      </div>
 
-    <select
-      class="form-select dynamic-field"
-      id="appointment_time"
-      name="appointment_time"
-      required>
-      <option value="">Select time</option>
-      {% for slot in slots %}
-      {% if slot.minute == 45 %}
-      <option value="{{slot.hour}}:{{slot.minute}}">{{slot.hour}}:{{slot.minute}}-{{slot.hour+1}}:00</option>
-      {% elif slot.minute == 0 %}
-      <option value="{{slot.hour}}:{{slot.minute}}{{slot.minute}}">{{slot.hour}}:00-{{slot.hour}}:{{slot.minute+15}}</option>
-      {% else %}
-      <option value="{{slot.hour}}:{{slot.minute}}">{{slot.hour}}:{{slot.minute}}-{{slot.hour}}:{{slot.minute+15}}</option>
-      {% endif %}
-      {% endfor %}
+      <select
+        class="form-select dynamic-field"
+        id="appointment_time"
+        name="appointment_time"
+        required>
+        <option value="">Select time</option>
+        {% for slot in slots %}
+        {% if slot.minute == 45 %}
+        <option value="{{slot.hour}}:{{slot.minute}}">{{slot.hour}}:{{slot.minute}}-{{slot.hour+1}}:00</option>
+        {% elif slot.minute == 0 %}
+        <option value="{{slot.hour}}:{{slot.minute}}{{slot.minute}}">{{slot.hour}}:00-{{slot.hour}}:{{slot.minute+15}}</option>
+        {% else %}
+        <option value="{{slot.hour}}:{{slot.minute}}">{{slot.hour}}:{{slot.minute}}-{{slot.hour}}:{{slot.minute+15}}</option>
+        {% endif %}
+        {% endfor %}
 
-    </select>
-  </div>
-  <div class="form-group">
-    <label for="firstname">First name *</label>
-    <input
-      type="text"
-      class="form-control"
-      id="first_name"
-      name="first_name"
-      placeholder="First name"
-      required
-    />
-  </div>
-  <div class="form-group">
-    <label for="lastname">Last name *</label>
-    <input
-      type="text"
-      class="form-control"
-      id="last_name"
-      name="last_name"
-      placeholder="Last name"
-      required
-    />
-  </div>
-  <div class="form-group">
-    <label for="email1">E-Mail *</label>
-    <input
-      type="email"
-      class="form-control"
-      id="email1"
-      name="email1"
-      placeholder="E-Mail"
-      required
-    />
-  </div>
-  <div class="form-group">
-    <label for="email2">E-Mail repeat *</label>
-    <input
-      type="email"
-      class="form-control"
-      id="email2"
-      name="email2"
-      placeholder="Repeat E-Mail"
-      required
-    />
-  </div>
-  <div class="form-group">
-    <label for="tel">Telephone number (including country code) *</label>
-    <input
-      type="tel"
-      class="form-control"
-      id="tel"
-      name="tel"
-      placeholder="Telephone number"
-      required
-    />
-  </div>
-  <div class="form-group">
-    <label for="birthdate">Birthdate *</label>
-    <input
-      type="date"
-      class="form-control"
-      id="birthdate"
-      name="birthdate"
-      placeholder="Birthdate"
-      max="{{today}}"
-      required
-    />
-  </div>
-  <div class="form-group">
-    <label for="gender">Gender *</label>
-    <select
-      class="form-select dynamic-field"
-      id="gender"
-      name="gender"
-      required>
-      <option value="">Please select</option>
-      <option value="m">male</option>
-      <option value="w">female</option>
-      <option value="d">divers</option>
-    </select>
-  </div>
-  <div class="form-group">
-    <label for="street">Street *</label>
-    <input
-      type="text"
-      class="form-control"
-      id="street"
-      name="street"
-      placeholder="Street"
-      required
-    />
-  </div>
-  <div class="form-group">
-    <label for="number">House number *</label>
-    <input
-      type="text"
-      class="form-control"
-      id="number"
-      name="number"
-      placeholder="House number"
-      required
-    />
-  </div>
-  <div class="form-group">
-    <label for="postcode">Post code *</label>
-    <input
-      type="text"
-      class="form-control"
-      id="post_code"
-      name="post_code"
-      placeholder="Post code"
-      required
-    />
-  </div>
-  <div class="form-group">
-    <label for="city">City *</label>
-    <input
-      type="text"
-      class="form-control"
-      id="city"
-      name="city"
-      placeholder="City"
-      required
-    />
-  </div>
-  <div class="form-group">
-    <label for="country">Country *</label>
-    <input
-      type="text"
-      class="form-control"
-      id="country"
-      name="country"
-      placeholder="Country"
-      required
-    />
-  </div>
-  <div class="form-group">
-    <label for="passport">Document number (ID or Passport)</label>
-    <input
-      type="text"
-      class="form-control"
-      id="passport"
-      name="passport"
-      placeholder="Document number"
-    />
-  </div>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="first_name">First name *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="first_name"
+        name="first_name"
+        placeholder="First name"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="last_name">Last name *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="last_name"
+        name="last_name"
+        placeholder="Last name"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="email1">E-Mail *</label>
+      <input
+        type="email"
+        class="form-control"
+        id="email1"
+        name="email1"
+        placeholder="E-Mail"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="email2">E-Mail repeat *</label>
+      <input
+        type="email"
+        class="form-control"
+        id="email2"
+        name="email2"
+        placeholder="Repeat E-Mail"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="tel">Telephone number (including country code) *</label>
+      <input
+        type="tel"
+        class="form-control"
+        id="tel"
+        name="tel"
+        placeholder="Telephone number"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="birthdate">Birthdate *</label>
+      <input
+        type="date"
+        class="form-control"
+        id="birthdate"
+        name="birthdate"
+        placeholder="Birthdate"
+        max="{{today}}"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="gender">Gender *</label>
+      <select
+        class="form-select dynamic-field"
+        id="gender"
+        name="gender"
+        required>
+        <option value="">Please select</option>
+        <option value="m">male</option>
+        <option value="w">female</option>
+        <option value="d">divers</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="street">Street *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="street"
+        name="street"
+        placeholder="Street"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="number">House number *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="number"
+        name="number"
+        placeholder="House number"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="post_code">Post code *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="post_code"
+        name="post_code"
+        placeholder="Post code"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="city">City *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="city"
+        name="city"
+        placeholder="City"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="country">Country *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="country"
+        name="country"
+        placeholder="Country"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="passport">Document number (ID or Passport)</label>
+      <input
+        type="text"
+        class="form-control"
+        id="passport"
+        name="passport"
+        placeholder="Document number"
+      />
+    </div>
+  {% endif %}
   <br>
   <button type="submit" class="btn btn-primary">Send</button>
 </form>
