@@ -48,7 +48,7 @@ def date_is_valid(date: str) -> bool:
     :param date: Date passed as string.
     :return: True if date has format YYYY-MM-DD, False otherwise.
     """
-    if re.match("\\d{4}-\\d{2}-\\d{2}", date):
+    if re.fullmatch("\\d{4}-\\d{2}-\\d{2}", date):
         return True
     return False
 
@@ -59,7 +59,7 @@ def time_is_valid(time: str) -> bool:
     :param time: Time as a string.
     :return: True if given adheres to format HH:MM, False otherwise.
     """
-    if re.match("\\d{1,2}:\\d{2}", time):
+    if re.fullmatch("\\d{1,2}:\\d{2}", time):
         return True
     return False
 
@@ -83,7 +83,7 @@ def email_is_valid(email: str):
     :param email: Email address as a string.
     :return: True if email is a valid email address, False otherwise.
     """
-    if not re.match("[^@]+@[^@]+\\.[^@]+", email):
+    if not re.fullmatch("[^@]+@[^@]+\\.[^@]+", email):
         return False
     return True
 
@@ -111,7 +111,7 @@ def tel_is_valid(tel: str) -> bool:
     :return: True if telephone number is a valid telephone number, False otherwise.
     """
     tel_no_spaces = ''.join(tel.split())
-    if re.match("\\+\\d{11,14}", tel_no_spaces):
+    if re.fullmatch("\\+\\d{11,14}", tel_no_spaces):
         return True
     return False
 
@@ -122,7 +122,7 @@ def house_number_is_valid(house_number: str) -> bool:
     :param house_number: House number as a string.
     :return: True if house number has format [number][optional letter], False otherwise.
     """
-    if re.match("\\d{1,4}[\\w]?", house_number):
+    if re.fullmatch("\\d{1,4}[a-zA-Z]?", house_number):
         return True
     return False
 
@@ -133,6 +133,6 @@ def postcode_is_valid(postcode: str) -> bool:
     :param postcode: Postcode as a string.
     :return: True if postcode is a 5-digit number, False otherwise.
     """
-    if re.match("\\d{5}", postcode):
+    if re.fullmatch("\\d{5}", postcode):
         return True
     return False
