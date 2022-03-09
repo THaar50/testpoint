@@ -77,7 +77,7 @@ def appointment_is_valid(date: str, time: str) -> bool:
     return False
 
 
-def email_is_valid(email: str):
+def email_is_valid(email: str) -> bool:
     """
     Check if email address adheres to expected structure of an email address (prefix@domain).
     :param email: Email address as a string.
@@ -111,7 +111,7 @@ def tel_is_valid(tel: str) -> bool:
     :return: True if telephone number is a valid telephone number, False otherwise.
     """
     tel_no_spaces = ''.join(tel.split())
-    if re.fullmatch("\\+\\d{11,14}", tel_no_spaces):
+    if re.fullmatch("\\+?\\d{11,14}", tel_no_spaces):
         return True
     return False
 
