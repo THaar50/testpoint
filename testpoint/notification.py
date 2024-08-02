@@ -75,11 +75,15 @@ def send_mail(send_to: str, subject: str, message: str, qr_code_url: Optional[st
         msg.attach(msg_img)
 
     context = ssl.create_default_context()
-
-    with smtplib.SMTP_SSL(EMAIL_SERVER, EMAIL_PORT, context=context) as server:
-        server.login(EMAIL_USER, EMAIL_PW)
-        server.sendmail(EMAIL_USER, send_to, msg.as_string())
-        server.quit()
+    try:
+        with smtplib.SMTP_SSL(EMAIL_SERVER, EMAIL_PORT, context=context) as server:
+            server.login(EMAIL_USER, EMAIL_PW)
+            server.sendmail(EMAIL_USER, send_to, msg.as_string())
+            server.quit()
+    except ssl.SSLCertVerificationError as e:
+        print(e)
+        print(f'Could not reach server due to above error.')
+        raise ssl.SSLCertVerificationError()
 
 
 def send_booking_confirmation(email: str, first_name: str, appointment_day: str, appointment_time: str) -> None:
@@ -100,7 +104,10 @@ def send_booking_confirmation(email: str, first_name: str, appointment_day: str,
                                                   appointment_time=appointment_time)
     subject = "Your booking confirmation for your appointment at TestPoint!"
     qr_code_url = f"{WEBSITE_URL}/appinfo/{appointment_id}"
-    send_mail(send_to=email, subject=subject, message=message, qr_code_url=qr_code_url)
+    try:
+        send_mail(send_to=email, subject=subject, message=message, qr_code_url=qr_code_url)
+    except ssl.SSLCertVerificationError:
+        raise ssl.SSLCertVerificationError()
 
 
 def create_result_notification_message(first_name: str, appointment_id: str) -> str:
@@ -136,4 +143,8 @@ def send_test_result_notification(email: str, first_name: str, appointment_id: s
     """
     subject = "Your test result is available!"
     message = create_result_notification_message(first_name=first_name, appointment_id=appointment_id)
-    send_mail(send_to=email, subject=subject, message=message)
+    try:
+        send_mail(send_to=email, subject=subject, message=message)
+    except ssl.SSLCertVerificationError as e:
+        print(e)
+        raise ssl.SSLCertVerificationError()

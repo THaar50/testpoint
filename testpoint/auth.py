@@ -57,7 +57,7 @@ def login():
         if is_admin(username=username):
             return redirect(url_for('routes.admin'))
 
-        return render_template('staff.html')
+        return redirect(url_for('routes.staff'))
 
     return render_template('login.html')
 
